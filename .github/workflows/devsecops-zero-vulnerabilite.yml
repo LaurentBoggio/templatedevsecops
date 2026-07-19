@@ -21,7 +21,7 @@ jobs:
         uses: gitleaks/gitleaks-action@v3
         with:
           config_path: .gitleaks.toml
-          args: --verbose
+          args: --verbose --report-format=sarif --report-path=results.sarif
 
   code-scan:
     name: Analyse CodeQL

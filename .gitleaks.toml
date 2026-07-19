@@ -1,13 +1,16 @@
 title = "Gitleaks rules"
 
 [[rules]]
+id = "aws-access-key"
 description = "AWS access key"
 regex = '''AKIA[0-9A-Z]{16}'''
 
 [[rules]]
+id = "slack-token"
 description = "Slack token"
 regex = '''xox[baprs]-[0-9A-Za-z]{10,48}'''
 
 [[rules]]
+id = "generic-api-key"
 description = "Generic API key"
 regex = '''(?i)(api_key|apikey|api-key|secret|token)\s*[=:]\s*["']?[0-9a-zA-Z\-\_]{20,}'''
