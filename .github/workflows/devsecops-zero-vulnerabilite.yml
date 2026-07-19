@@ -16,6 +16,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Setup Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.26'
       - name: Installer Gitleaks CLI
         run: |
           go install github.com/zricethezav/gitleaks/v8@latest
