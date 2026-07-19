@@ -32,7 +32,7 @@ jobs:
       - name: Initialiser CodeQL
         uses: github/codeql-action/init@v3
         with:
-          languages: javascript,python
+          languages: javascript
       - name: Exécuter CodeQL
         uses: github/codeql-action/analyze@v3
 
