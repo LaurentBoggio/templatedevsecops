@@ -25,5 +25,5 @@ if (require.main === module) {
 module.exports = {
   requestHandler,
   createServer,
-  PORT,
+  PORT
 }
