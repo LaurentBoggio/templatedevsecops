@@ -13,8 +13,17 @@ const requestHandler = (req, res) => {
   res.end('Hello from Template DevSecOps!')
 }
 
-const server = http.createServer(requestHandler)
+const createServer = () => http.createServer(requestHandler)
 
-server.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`)
-})
+if (require.main === module) {
+  const server = createServer()
+  server.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`)
+  })
+}
+
+module.exports = {
+  requestHandler,
+  createServer,
+  PORT,
+}

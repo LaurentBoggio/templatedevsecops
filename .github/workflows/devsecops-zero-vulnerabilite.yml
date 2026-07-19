@@ -88,3 +88,18 @@ jobs:
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+  test:
+    name: Tests
+    needs: [secret-scan, dependency-audit]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      - name: Installer les dépendances
+        run: npm install
+      - name: Exécuter les tests
+        run: npm test
+
