@@ -1,0 +1,84 @@
+name: DevSecOps Zéro Vulnérabilité
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  secret-scan:
+    name: Scan des secrets
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Scan avec Gitleaks
+        uses: gitleaks/gitleaks-action@v4
+        with:
+          config_path: .gitleaks.toml
+          args: --verbose
+
+  code-scan:
+    name: Analyse CodeQL
+    needs: secret-scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Initialiser CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: javascript,python
+      - name: Exécuter CodeQL
+        uses: github/codeql-action/analyze@v3
+
+  dependency-audit:
+    name: Audit des dépendances
+    needs: secret-scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Détecter les fichiers de dépendances
+        id: detect-deps
+        run: |
+          echo "package_json=$(if [ -f package.json ]; then echo true; else echo false; fi)" >> $GITHUB_OUTPUT
+          echo "package_lock=$(if [ -f package-lock.json ]; then echo true; else echo false; fi)" >> $GITHUB_OUTPUT
+          echo "requirements=$(if [ -f requirements.txt ]; then echo true; else echo false; fi)" >> $GITHUB_OUTPUT
+
+      - name: Installer les dépendances npm
+        if: steps.detect-deps.outputs.package_json == 'true' || steps.detect-deps.outputs.package_lock == 'true'
+        run: |
+          npm ci
+
+      - name: Audit npm
+        if: steps.detect-deps.outputs.package_json == 'true' || steps.detect-deps.outputs.package_lock == 'true'
+        run: npm audit --audit-level=moderate
+
+      - name: Installer les dépendances Python
+        if: steps.detect-deps.outputs.requirements == 'true'
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pip-audit
+          python -m pip install -r requirements.txt
+
+      - name: Audit pip
+        if: steps.detect-deps.outputs.requirements == 'true'
+        run: python -m pip audit --disable-pip-version-check
+
+  lint:
+    name: Qualité de code
+    needs: secret-scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Exécuter Super-Linter
+        uses: github/super-linter@v5
+        env:
+          VALIDATE_ALL_CODEBASE: true
+          DEFAULT_BRANCH: main
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
