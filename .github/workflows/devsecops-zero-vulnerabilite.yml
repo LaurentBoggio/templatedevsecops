@@ -16,13 +16,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Installer gitleaks CLI
+      - name: Installer Gitleaks CLI
         run: |
           go install github.com/zricethezav/gitleaks/v8@latest
           echo "$HOME/go/bin" >> $GITHUB_PATH
       - name: Scan avec Gitleaks
         run: |
-          gitleaks detect --source . --config-path .gitleaks.toml --report-format sarif --report-path results.sarif
+          gitleaks detect --source . --config .gitleaks.toml --report-format sarif --report-path results.sarif
 
   code-scan:
     name: Analyse CodeQL
