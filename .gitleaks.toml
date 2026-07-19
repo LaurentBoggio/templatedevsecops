@@ -1,5 +1,11 @@
 title = "Gitleaks rules"
 
+useDefault = true
+
+[[allowlists]]
+description = "Ignore node_modules false positives"
+paths = [ '''node_modules/''', '''node_modules/.*''' ]
+
 [[rules]]
 id = "aws-access-key"
 description = "AWS access key"
