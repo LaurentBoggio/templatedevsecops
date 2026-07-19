@@ -23,7 +23,7 @@ jobs:
       - name: Installer Gitleaks CLI
         run: |
           go install github.com/zricethezav/gitleaks/v8@latest
-          echo "$HOME/go/bin" >> $GITHUB_PATH
+          echo "$HOME/go/bin" >> "$GITHUB_PATH"
       - name: Scan avec Gitleaks
         run: |
           gitleaks detect --source . --config .gitleaks.toml --report-format sarif --report-path results.sarif

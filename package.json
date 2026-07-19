@@ -5,12 +5,9 @@
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
-    "test": "npx jest --runInBand"
+    "test": "node --test ./test/health.test.js"
   },
   "author": "",
   "license": "MIT",
-  "dependencies": {},
-  "devDependencies": {
-    "jest": "^29.0.0"
-  }
+  "dependencies": {}
 }
