@@ -8,6 +8,8 @@ on:
 
 permissions:
   contents: read
+  checks: write
+  statuses: write
   security-events: write
 
 jobs:
@@ -50,9 +52,11 @@ jobs:
       - name: Détecter les fichiers de dépendances
         id: detect-deps
         run: |
-          echo "package_json=$(if [ -f package.json ]; then echo true; else echo false; fi)" >> $GITHUB_OUTPUT
-          echo "package_lock=$(if [ -f package-lock.json ]; then echo true; else echo false; fi)" >> $GITHUB_OUTPUT
-          echo "requirements=$(if [ -f requirements.txt ]; then echo true; else echo false; fi)" >> $GITHUB_OUTPUT
+          {
+            echo "package_json=$(if [ -f package.json ]; then echo true; else echo false; fi)"
+            echo "package_lock=$(if [ -f package-lock.json ]; then echo true; else echo false; fi)"
+            echo "requirements=$(if [ -f requirements.txt ]; then echo true; else echo false; fi)"
+          } >> "$GITHUB_OUTPUT"
 
       - name: Installer les dépendances npm
         if: steps.detect-deps.outputs.package_json == 'true' || steps.detect-deps.outputs.package_lock == 'true'
